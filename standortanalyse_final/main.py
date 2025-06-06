@@ -1,10 +1,10 @@
-
 import streamlit as st
 from pages.map_view import show_map
 from pages.ranking_view import show_ranking
 from pages.export_view import show_export
 
 st.set_page_config(page_title="Gewerbeflächenanalyse Frankfurt", layout="wide")
+
 st.image("https://upload.wikimedia.org/wikipedia/commons/7/75/Frankfurt_Skyline_Panorama.jpg", use_column_width=True)
 st.title("📍 Standortanalyse Gewerbeflächen – Großraum Frankfurt")
 
