@@ -11,11 +11,16 @@ def show_map():
 
     # Service Account Authentifizierung
     SERVICE_ACCOUNT_JSON = "credentials.json"
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_JSON,
-        scopes=["https://www.googleapis.com/auth/earthengine"]
-    )
-    ee.Initialize(credentials)
+  import streamlit as st
+import json
+
+service_account_info = st.secrets["earthengine"]
+credentials = service_account.Credentials.from_service_account_info(
+    json.loads(json.dumps(service_account_info)),
+    scopes=["https://www.googleapis.com/auth/earthengine"]
+)
+ee.Initialize(credentials)
+
 
     region = ee.Geometry.Rectangle([8.4, 49.9, 8.9, 50.3])
     elevation = ee.Image('USGS/SRTMGL1_003').clip(region)
