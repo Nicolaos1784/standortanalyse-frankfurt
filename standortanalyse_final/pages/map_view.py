@@ -2,17 +2,14 @@ import streamlit as st
 import folium
 from streamlit_folium import folium_static
 import ee
-import geemap.foliumap as geemap
-import json
 from google.oauth2 import service_account
+import geemap.foliumap as geemap
 
 def show_map():
     st.subheader("🌍 Übersichtskarte – Kriterienvisualisierung")
 
-   credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["earthengine"],
-    scopes=["https://www.googleapis.com/auth/earthengine"]
-) 
+    credentials = service_account.Credentials.from_service_account_info(
+        st.secrets["earthengine"],
         scopes=["https://www.googleapis.com/auth/earthengine"]
     )
     ee.Initialize(credentials)
