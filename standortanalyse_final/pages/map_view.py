@@ -1,27 +1,23 @@
-
 import streamlit as st
 import folium
 from streamlit_folium import folium_static
 import ee
 from google.oauth2 import service_account
 import geemap.foliumap as geemap
+import json
 
 def show_map():
     st.subheader("🌍 Übersichtskarte – Kriterienvisualisierung")
 
-    # Service Account Authentifizierung
-  
-  import streamlit as st
-import json
+    # Service Account Authentifizierung über Streamlit Secrets
+    service_account_info = st.secrets["earthengine"]
+    credentials = service_account.Credentials.from_service_account_info(
+        json.loads(json.dumps(service_account_info)),
+        scopes=["https://www.googleapis.com/auth/earthengine"]
+    )
+    ee.Initialize(credentials)
 
-service_account_info = st.secrets["earthengine"]
-credentials = service_account.Credentials.from_service_account_info(
-    json.loads(json.dumps(service_account_info)),
-    scopes=["https://www.googleapis.com/auth/earthengine"]
-)
-ee.Initialize(credentials)
-
-
+    # Analysegebiet und Datenquellen
     region = ee.Geometry.Rectangle([8.4, 49.9, 8.9, 50.3])
     elevation = ee.Image('USGS/SRTMGL1_003').clip(region)
     slope = ee.Terrain.slope(elevation)
@@ -37,9 +33,11 @@ ee.Initialize(credentials)
     slope_norm = slope.lte(30).multiply(ee.Image(1).subtract(slope.divide(30)))
     dist_norm = distance.lte(10000).multiply(ee.Image(1).subtract(distance.divide(10000)))
 
+    # Gewichtete Bewertung
     score = dist_norm.multiply(0.5).add(elev_norm.multiply(0.3)).add(slope_norm.multiply(0.2))
     score_vis = {"min": 0, "max": 1, "palette": ["red", "yellow", "green"]}
 
+    # Karte rendern
     m = geemap.Map(center=[50.1, 8.65], zoom=10)
     m.addLayer(score, score_vis, "Eignungsindex")
     m.addLayer(substations, {}, "Umspannwerke")
