@@ -5,7 +5,10 @@ from pages.export_view import show_export
 
 st.set_page_config(page_title="Gewerbeflächenanalyse Frankfurt", layout="wide")
 
-st.image("https://upload.wikimedia.org/wikipedia/commons/7/75/Frankfurt_Skyline_Panorama.jpg", use_column_width=True)
+st.image(
+    "https://upload.wikimedia.org/wikipedia/commons/7/75/Frankfurt_Skyline_Panorama.jpg",
+    use_column_width=True
+)
 st.title("📍 Standortanalyse Gewerbeflächen – Großraum Frankfurt")
 
 st.markdown("""
