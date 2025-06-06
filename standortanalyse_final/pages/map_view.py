@@ -9,9 +9,10 @@ from google.oauth2 import service_account
 def show_map():
     st.subheader("🌍 Übersichtskarte – Kriterienvisualisierung")
 
-    service_account_info = st.secrets["earthengine"]
-    credentials = service_account.Credentials.from_service_account_info(
-        json.loads(json.dumps(service_account_info)),
+   credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["earthengine"],
+    scopes=["https://www.googleapis.com/auth/earthengine"]
+) 
         scopes=["https://www.googleapis.com/auth/earthengine"]
     )
     ee.Initialize(credentials)
