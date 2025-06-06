@@ -10,7 +10,7 @@ def show_map():
     st.subheader("🌍 Übersichtskarte – Kriterienvisualisierung")
 
     # Service Account Authentifizierung
-    SERVICE_ACCOUNT_JSON = "credentials.json"
+  
   import streamlit as st
 import json
 
