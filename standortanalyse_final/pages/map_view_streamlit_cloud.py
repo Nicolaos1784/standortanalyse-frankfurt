@@ -1,4 +1,3 @@
-
 import streamlit as st
 import folium
 from streamlit_folium import folium_static
@@ -10,7 +9,6 @@ from google.oauth2 import service_account
 def show_map():
     st.subheader("🌍 Übersichtskarte – Kriterienvisualisierung")
 
-    # Earth Engine Auth mit st.secrets (aus secrets.toml)
     service_account_info = st.secrets["earthengine"]
     credentials = service_account.Credentials.from_service_account_info(
         json.loads(json.dumps(service_account_info)),
@@ -18,7 +16,6 @@ def show_map():
     )
     ee.Initialize(credentials)
 
-    # Analysegebiet definieren
     region = ee.Geometry.Rectangle([8.4, 49.9, 8.9, 50.3])
     elevation = ee.Image('USGS/SRTMGL1_003').clip(region)
     slope = ee.Terrain.slope(elevation)
