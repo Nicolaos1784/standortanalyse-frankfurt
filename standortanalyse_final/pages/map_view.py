@@ -75,10 +75,27 @@ def fetch_power_lines(bbox):
 def show_map():
     st.subheader("🗺️ Karte: Umspannwerke & Stromleitungen")
 
-    bbox = (49.9, 8.4, 50.3, 8.9)  # Großraum Frankfurt
+    bbox = (49.9, 8.4, 50.3, 8.9)
+
+    st.markdown("🔌 **Stromleitungen nach Spannungsklasse filtern**")
+    selected_voltages = st.multiselect(
+        "Spannungsklassen auswählen:",
+        options=["110000", "220000", "380000"],
+        default=["110000", "220000", "380000"],
+        format_func=lambda v: f"{int(v)//1000} kV"
+    )
 
     gdf_substations = fetch_substations(bbox)
     gdf_lines = fetch_power_lines(bbox)
+
+    # Nach Spannung filtern
+    def matches_voltage(tags):
+        v = tags.get("voltage")
+        if isinstance(v, list):
+            return any(val in selected_voltages for val in v)
+        return v in selected_voltages
+
+    gdf_lines = gdf_lines[gdf_lines["tags"].apply(matches_voltage)]
 
     m = folium.Map(location=[50.1, 8.6], zoom_start=10)
 
@@ -93,12 +110,14 @@ def show_map():
 
     # Stromleitungen
     for _, row in gdf_lines.iterrows():
+        voltage = row.get("tags", {}).get("voltage", "")
+        popup_text = f"Stromleitung<br>Spannung: {voltage} V" if voltage else "Stromleitung"
         folium.PolyLine(
             locations=[(pt[1], pt[0]) for pt in row.geometry.coords],
             color="blue",
             weight=2,
-            opacity=0.6,
-            tooltip="Stromleitung"
+            opacity=0.7,
+            tooltip=popup_text
         ).add_to(m)
 
     folium_static(m)
